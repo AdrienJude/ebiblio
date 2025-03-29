@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="listeAdherent" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="40e93072-d694-4f71-a1bf-8de2baabeb02">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="24"/>
+	<queryString language="SQL">
+		<![CDATA[SELECT * FROM `vuelisteadherents`]]>
+	</queryString>
+	<field name="idAdherent" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="nom" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prenom" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="adresse" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="type" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="quota" class="java.lang.Integer">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="statut" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<group name="idAdherent">
+		<groupExpression><![CDATA[$F{idAdherent}]]></groupExpression>
+	</group>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="64" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="96" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="96" backcolor="#CC0033" uuid="966fed7d-b83c-4fc5-b97d-8d84ee5d3ac0"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="154" y="31" width="234" height="36" forecolor="#FFFFFF" uuid="54edeace-9ad5-4b72-942d-942d7412cc01"/>
+				<textElement textAlignment="Justified">
+					<font size="24" isBold="true" isUnderline="true"/>
+				</textElement>
+				<text><![CDATA[liste des Adherents ebiblio]]></text>
+			</staticText>
+		</band>
+	</pageHeader>
+	<columnHeader>
+		<band height="42" splitType="Stretch">
+			<staticText>
+				<reportElement x="15" y="19" width="63" height="20" uuid="a8becc19-8cc3-4fc2-a072-ae7d1876dc57"/>
+				<text><![CDATA[identifiant]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="181" y="19" width="63" height="20" uuid="b774663a-36f0-4618-9634-3113ba6c5b06"/>
+				<text><![CDATA[Adresse]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="104" y="19" width="63" height="20" uuid="d8ef5537-2913-4c66-9c68-2ffaa93cff4a"/>
+				<text><![CDATA[Nom]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="261" y="19" width="63" height="20" uuid="1e37ef45-cc06-4468-b399-939ff82002eb"/>
+				<text><![CDATA[Adresse]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="345" y="19" width="67" height="20" uuid="8bbb210c-ecaa-4335-b49a-e43114b06670"/>
+				<textElement textAlignment="Justified"/>
+				<text><![CDATA[Quota]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="427" y="19" width="63" height="20" uuid="6bdaf4c4-36dd-459e-bff0-f3eb739ddb1e"/>
+				<text><![CDATA[Statut]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="35" splitType="Stretch">
+			<textField>
+				<reportElement x="15" y="14" width="73" height="20" uuid="be479f99-560f-435b-91c6-850037473389"/>
+				<textElement textAlignment="Justified"/>
+				<textFieldExpression><![CDATA[$F{idAdherent}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="104" y="14" width="63" height="20" uuid="57fbe3bc-08aa-466f-878c-732e215cf400"/>
+				<textElement textAlignment="Justified"/>
+				<textFieldExpression><![CDATA[$F{nom}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="181" y="14" width="63" height="20" uuid="554d90d3-cb55-4491-a74b-16adc569f13a"/>
+				<textElement textAlignment="Justified"/>
+				<textFieldExpression><![CDATA[$F{adresse}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="261" y="14" width="63" height="20" uuid="a316a7ed-f9ff-462e-b2ec-f1fc0443f077"/>
+				<textElement textAlignment="Justified"/>
+				<textFieldExpression><![CDATA[$F{type}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="355" y="14" width="57" height="20" uuid="1e74bcea-d343-44c2-b91b-20172976c28a"/>
+				<textElement textAlignment="Justified"/>
+				<textFieldExpression><![CDATA[$F{quota}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="427" y="14" width="78" height="20" uuid="97524891-cc42-4284-abaf-e31671abc761"/>
+				<textElement textAlignment="Justified"/>
+				<textFieldExpression><![CDATA[$F{statut}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch">
+			<staticText>
+				<reportElement x="41" y="29" width="92" height="20" uuid="63c2236f-3d43-4aca-b7b0-4dbdcacbf857"/>
+				<text><![CDATA[imprimé le : ]]></text>
+			</staticText>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="167" y="29" width="158" height="20" uuid="5c1e1f7b-a710-4596-b3b8-e6eefaeaf954"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
+			</textField>
+		</band>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
