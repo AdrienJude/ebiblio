@@ -39,15 +39,12 @@ public class formadherent extends javax.swing.JInternalFrame {
      * Creates new form formLivre
      */
     public formadherent() {
+    
         
       initComponents();
       tm= (DefaultTableModel)tabAdherent.getModel();
       // Récupérer la colonne "Type" (indice 5)
-      System.out.println("Nombre de colonnes dans la table: " + tabAdherent.getColumnCount());
-System.out.println("Nombre de colonnes dans le modèle: " + tabAdherent.getModel().getColumnCount());
-for (int i = 0; i < tabAdherent.getColumnCount(); i++) {
-    System.out.println("Colonne " + i + ": " + tabAdherent.getColumnName(i));
-}
+   
 TableColumn typeColumn = tabAdherent.getColumnModel().getColumn(5);
 
 // Créer une JComboBox avec les valeurs autorisées
@@ -61,7 +58,7 @@ typeColumn.setCellEditor(new DefaultCellEditor(comboBox));
     btnModifier.setEnabled(false);
     setTxtIdValue();
     ajouterListenersCases();
-    
+        actualiser();
    
     }/**/
     public void verifierCasesCochees() {
@@ -200,7 +197,6 @@ private void ajouterListenersCases() {
         btnModifier = new javax.swing.JButton();
         btnSupprimer = new javax.swing.JButton();
         btnImprimer = new javax.swing.JButton();
-        btnActualiser = new javax.swing.JButton();
         btnRechercher = new javax.swing.JButton();
 
         jTabbedPane1.addFocusListener(new java.awt.event.FocusAdapter() {
@@ -386,13 +382,6 @@ private void ajouterListenersCases() {
             }
         });
 
-        btnActualiser.setText("actualiser");
-        btnActualiser.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                btnActualiserMouseClicked(evt);
-            }
-        });
-
         btnRechercher.setBackground(new java.awt.Color(255, 255, 255));
         btnRechercher.setForeground(new java.awt.Color(102, 102, 102));
         btnRechercher.setIcon(new javax.swing.ImageIcon(getClass().getResource("/gesbibliothèque/image/search.png"))); // NOI18N
@@ -412,15 +401,13 @@ private void ajouterListenersCases() {
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, jPanel3Layout.createSequentialGroup()
-                .addGap(48, 48, 48)
-                .addComponent(btnActualiser, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addComponent(btnModifier, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(30, 30, 30)
+                .addGap(62, 62, 62)
                 .addComponent(btnSupprimer, javax.swing.GroupLayout.PREFERRED_SIZE, 117, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(37, 37, 37)
+                .addGap(43, 43, 43)
                 .addComponent(btnImprimer, javax.swing.GroupLayout.PREFERRED_SIZE, 116, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(116, 116, 116))
+                .addGap(144, 144, 144))
             .addGroup(jPanel3Layout.createSequentialGroup()
                 .addGap(145, 145, 145)
                 .addComponent(jLabel8)
@@ -449,9 +436,8 @@ private void ajouterListenersCases() {
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnImprimer, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(btnSupprimer, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnModifier, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnActualiser, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(65, Short.MAX_VALUE))
+                    .addComponent(btnModifier, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(69, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Liste des adhérents", jPanel3);
@@ -553,11 +539,6 @@ try (Connection con = connexionbd.seConnecter();
     private void tabAdherentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabAdherentMouseClicked
 
     }//GEN-LAST:event_tabAdherentMouseClicked
-
-    private void btnActualiserMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnActualiserMouseClicked
-      
-        actualiser();
-    }//GEN-LAST:event_btnActualiserMouseClicked
 
     private void btnRechercherActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRechercherActionPerformed
         // TODO add your handling code here:
@@ -733,23 +714,28 @@ if (tabAdherent.isEditing()) {
         String sql = "UPDATE adherent SET nom=?, prenom=?, adresse=?, type=?, quota=?, statut=? WHERE idAdherent=?";
         PreparedStatement ps = con.prepareStatement(sql);
 
-        ps.setString(1, idAdherent);
-        ps.setString(2, nom);
-        ps.setString(3, prenom);
-        ps.setString(4, adresse);
-        ps.setString(5, type);
-        ps.setInt(6, quota);
-        ps.setString(7, statut);
+       
+        ps.setString(1, nom);
+        ps.setString(2, prenom);
+        ps.setString(3, adresse);
+        ps.setString(4, type);
+        ps.setInt(5, quota);
+        ps.setString(6, statut);
+         ps.setString(7, idAdherent);
 
         ps.executeUpdate();
         JOptionPane.showMessageDialog(null, "Modification enregistrée avec succès !");
-
+       
         ps.close();
         con.close();
+        actualiser();
+      
     } catch (Exception ex) {
         ex.printStackTrace();
         JOptionPane.showMessageDialog(null, "Erreur lors de la modification !");
+       
     }
+   
     }//GEN-LAST:event_btnModifierMouseClicked
 
     private void btnImprimerMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_btnImprimerMouseClicked
@@ -776,7 +762,6 @@ if (tabAdherent.isEditing()) {
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton btnActualiser;
     private javax.swing.JButton btnAjouter;
     private javax.swing.JButton btnImprimer;
     private javax.swing.JButton btnModifier;
