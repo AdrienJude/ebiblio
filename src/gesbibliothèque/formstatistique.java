@@ -4,18 +4,65 @@
  */
 package gesbibliothèque;
 
+import classe.connexionbd;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author Adrien
  */
 public class formstatistique extends javax.swing.JInternalFrame {
-
+ public static Connection con;
+     public static Statement st;
+     public static PreparedStatement ps;
+     public static ResultSet rs;
+     private  final DefaultTableModel tm;
     /**
      * Creates new form formstatistique
      */
     public formstatistique() {
-        initComponents();
+    initComponents();
+    tm = (DefaultTableModel) tabStatistique.getModel();
+
+    try {
+        con = connexionbd.seConnecter();
+        String sql = "SELECT " +
+                     "(SELECT COUNT(*) FROM livre) AS total_livres, " +
+                     "(SELECT COUNT(*) FROM adherent) AS total_adherents, " +
+                     "(SELECT COUNT(*) " +
+                     " FROM emprunt e " +
+                     " JOIN adherent a ON e.refAdherent = a.idAdherent " +
+                     " WHERE a.statut = 'retardataire') AS total_retards";
+
+        ps = con.prepareStatement(sql);
+        ResultSet rs = ps.executeQuery();
+
+        while (rs.next()) {
+            int totalLivres = rs.getInt("total_livres");
+            int totalAdherents = rs.getInt("total_adherents");
+            int totalRetards = rs.getInt("total_retards");
+
+            tm.addRow(new Object[]{totalLivres, totalAdherents, totalRetards});
+        }
+
+        // Fermeture des ressources
+        rs.close();
+        ps.close();
+        con.close();
+    } catch (ClassNotFoundException | SQLException ex) {
+        Logger.getLogger(formstatistique.class.getName()).log(Level.SEVERE, null, ex);
     }
+}
+
+
+
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -28,27 +75,28 @@ public class formstatistique extends javax.swing.JInternalFrame {
 
         jPanel1 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tabStatistique = new javax.swing.JTable();
 
         jPanel1.setBackground(new java.awt.Color(255, 255, 255));
 
-        jTable1.setBackground(new java.awt.Color(0, 204, 153));
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tabStatistique.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null},
-                {null, null, null},
-                {null, null, null},
-                {null, null, null}
+
             },
             new String [] {
                 "Nombre total de livres en stock", "Nombre total d'adhérents", "Nombres d'emprunts effectués en retard"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
-        if (jTable1.getColumnModel().getColumnCount() > 0) {
-            jTable1.getColumnModel().getColumn(0).setPreferredWidth(300);
-            jTable1.getColumnModel().getColumn(1).setPreferredWidth(300);
-            jTable1.getColumnModel().getColumn(2).setPreferredWidth(300);
+        tabStatistique.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tabStatistiqueMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tabStatistique);
+        if (tabStatistique.getColumnModel().getColumnCount() > 0) {
+            tabStatistique.getColumnModel().getColumn(0).setPreferredWidth(300);
+            tabStatistique.getColumnModel().getColumn(1).setPreferredWidth(300);
+            tabStatistique.getColumnModel().getColumn(2).setPreferredWidth(300);
         }
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
@@ -57,7 +105,7 @@ public class formstatistique extends javax.swing.JInternalFrame {
             jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addContainerGap()
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 575, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.DEFAULT_SIZE, 668, Short.MAX_VALUE)
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -87,10 +135,16 @@ public class formstatistique extends javax.swing.JInternalFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tabStatistiqueMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tabStatistiqueMouseClicked
+     
+        
+        
+    }//GEN-LAST:event_tabStatistiqueMouseClicked
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JPanel jPanel1;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
+    private javax.swing.JTable tabStatistique;
     // End of variables declaration//GEN-END:variables
 }
