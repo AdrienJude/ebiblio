@@ -47,8 +47,7 @@ public class formmain extends javax.swing.JFrame {
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
-        jPanel1.setBackground(new java.awt.Color(255, 51, 51));
-        jPanel1.setBackground(new java.awt.Color(0, 102, 204));
+        jPanel1.setBackground(new java.awt.Color(204, 0, 51));
 
         btnEmprunt.setFont(new java.awt.Font("Segoe UI", 1, 18)); // NOI18N
         btnEmprunt.setForeground(new java.awt.Color(255, 255, 255));

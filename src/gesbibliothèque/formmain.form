@@ -66,11 +66,7 @@
     <Container class="javax.swing.JPanel" name="jPanel1">
       <Properties>
         <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-<<<<<<< HEAD
-          <Color blue="cc" green="66" red="0" type="rgb"/>
-=======
-          <Color blue="33" green="33" red="ff" type="rgb"/>
->>>>>>> origin/formLivre
+          <Color blue="33" green="0" red="cc" type="rgb"/>
         </Property>
       </Properties>
 
