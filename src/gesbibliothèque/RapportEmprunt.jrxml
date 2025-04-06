@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="report name" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="691b1288-cbe9-43c4-96b0-b2fb62015e6f">
+	<property name="ireport.zoom" value="1.0"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="0"/>
+	<queryString>
+		<![CDATA[select nom,prenom,titre, CAST(datePret AS CHAR) AS datePret,CAST(dateRestitution AS CHAR) AS dateRestitution from emprunt INNER JOIN adherent ON idAdherent=refAdherent INNER JOIN livre ON idLivre=refLivre ORDER BY idEmprunt DESC limit 1]]>
+	</queryString>
+	<field name="nom" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="prenom" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="titre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="datePret" class="java.lang.String"/>
+	<field name="dateRestitution" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="79" splitType="Stretch"/>
+	</title>
+	<pageHeader>
+		<band height="35" splitType="Stretch"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="11" y="22" width="66" height="20" uuid="e2c9e8bc-9dc0-4818-ad74-110a7ddd166a"/>
+				<text><![CDATA[nom]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="97" y="22" width="59" height="20" uuid="1f04ef64-1b4f-4041-a9d3-fc2b48dc5b2c"/>
+				<text><![CDATA[prenom]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="177" y="22" width="77" height="20" uuid="4e3b90f6-b442-4d9d-8917-935d2a9fa6ef"/>
+				<text><![CDATA[titre]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="302" y="22" width="100" height="20" uuid="f06aedb3-7c58-466b-9a5d-ecc60187d8d8"/>
+				<text><![CDATA[date de Pret]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="425" y="22" width="121" height="20" uuid="0b95b7e1-c26b-4010-bd40-0082c294e34d"/>
+				<text><![CDATA[date limite de Restitution]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="51" splitType="Stretch">
+			<textField>
+				<reportElement x="11" y="21" width="86" height="20" uuid="d41f1b7f-abc7-47f6-890d-de00bd12e3c2"/>
+				<textFieldExpression><![CDATA[$F{nom}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="97" y="21" width="80" height="20" uuid="0545cb60-70a8-4f39-bbcd-852c46adc067"/>
+				<textFieldExpression><![CDATA[$F{prenom}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="177" y="21" width="108" height="20" uuid="4d11774d-5a61-441a-91d1-5e1cf6f6b15b"/>
+				<textFieldExpression><![CDATA[$F{titre}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="289" y="21" width="126" height="20" uuid="75bf2333-cd9e-4425-ac00-df93e099fc87"/>
+				<textFieldExpression><![CDATA[""+$F{datePret}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="425" y="21" width="130" height="20" uuid="0336e654-3ec8-4cc4-8632-e094da77e5c6"/>
+				<textFieldExpression><![CDATA[""+$F{dateRestitution}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="45" splitType="Stretch"/>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="42" splitType="Stretch"/>
+	</summary>
+</jasperReport>
