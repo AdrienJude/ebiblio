@@ -21,13 +21,38 @@
 		<band splitType="Stretch"/>
 	</background>
 	<title>
-		<band height="79" splitType="Stretch"/>
+		<band height="79" splitType="Stretch">
+			<rectangle radius="10">
+				<reportElement x="156" y="13" width="213" height="44" forecolor="#FFFFFF" backcolor="#FF6600" uuid="a7f9a55d-f7c4-467c-9345-f43abe46ddcc"/>
+			</rectangle>
+			<staticText>
+				<reportElement x="206" y="21" width="150" height="36" forecolor="#FFFFFF" uuid="7938e091-cd34-447e-a789-df09a5b74e2d"/>
+				<textElement>
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[Recu d'emprunt]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="446" y="13" width="100" height="20" uuid="71609694-51b0-440e-9612-4813a2980f97"/>
+				<text><![CDATA[BURKINA FASO]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="425" y="33" width="124" height="35" uuid="d6cee671-8059-4dda-9bd6-67c13fcde9ba"/>
+				<textElement>
+					<font size="18"/>
+				</textElement>
+				<text><![CDATA[Ouagadougou]]></text>
+			</staticText>
+		</band>
 	</title>
 	<pageHeader>
 		<band height="35" splitType="Stretch"/>
 	</pageHeader>
 	<columnHeader>
 		<band height="61" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="61" backcolor="#FF9966" uuid="7abcad14-b9bc-4e18-9da1-85783df8ada3"/>
+			</rectangle>
 			<staticText>
 				<reportElement x="11" y="22" width="66" height="20" uuid="e2c9e8bc-9dc0-4818-ad74-110a7ddd166a"/>
 				<text><![CDATA[nom]]></text>
@@ -51,7 +76,10 @@
 		</band>
 	</columnHeader>
 	<detail>
-		<band height="51" splitType="Stretch">
+		<band height="84" splitType="Stretch">
+			<rectangle>
+				<reportElement x="0" y="0" width="555" height="83" backcolor="#9999FF" uuid="d5a9859a-ac0d-471c-90f1-f51b0ed63616"/>
+			</rectangle>
 			<textField>
 				<reportElement x="11" y="21" width="86" height="20" uuid="d41f1b7f-abc7-47f6-890d-de00bd12e3c2"/>
 				<textFieldExpression><![CDATA[$F{nom}]]></textFieldExpression>
@@ -71,6 +99,10 @@
 			<textField>
 				<reportElement x="425" y="21" width="130" height="20" uuid="0336e654-3ec8-4cc4-8632-e094da77e5c6"/>
 				<textFieldExpression><![CDATA[""+$F{dateRestitution}]]></textFieldExpression>
+			</textField>
+			<textField pattern="EEEEE dd MMMMM yyyy">
+				<reportElement x="447" y="63" width="100" height="20" uuid="cc897aaa-4094-416d-a033-31bcb2fde962"/>
+				<textFieldExpression><![CDATA[new java.util.Date()]]></textFieldExpression>
 			</textField>
 		</band>
 	</detail>

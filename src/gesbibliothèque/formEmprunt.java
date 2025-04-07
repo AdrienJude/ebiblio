@@ -1278,7 +1278,7 @@ public void updateStatut(int id, String cnib) {
     }//GEN-LAST:event_tablo_adherentMouseClicked
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-  int selectedRow1=tablo_livre.getSelectedRow();
+ /* int selectedRow1=tablo_livre.getSelectedRow();
   int selectedRow2=tablo_adherent.getSelectedRow();
   
   if(selectedRow1 != -1){
@@ -1352,7 +1352,81 @@ public void updateStatut(int id, String cnib) {
       }
   }else{
       JOptionPane.showMessageDialog(this,"veillez selectionner le livre","attention",JOptionPane.ERROR_MESSAGE);
-  }
+  }*/
+    int selectedRow1=tablo_livre.getSelectedRow();
+int selectedRow2=tablo_adherent.getSelectedRow();
+
+if(selectedRow1 != -1){
+    
+    if(selectedRow2 != -1){
+        // TODO add your handling code here:
+        int id= recupereridLivre(txttitre.getText(),txtauteur.getText());
+        
+        String nb=model1.getValueAt(modelRow,5).toString().trim();
+        int nblivre=Integer.parseInt(nb);             
+        
+        String kota=model.getValueAt(modelRow1,5).toString().trim();
+        int quota=Integer.parseInt(kota);
+        String type=model.getValueAt(modelRow1,4).toString().trim();
+        String cnib= model.getValueAt(modelRow1,0).toString();
+        String statutAd=model.getValueAt(modelRow1,6).toString();
+        
+        int delaie=0;
+        if(type.equals("Etudiant"))
+        {
+            delaie=1;
+        }else if(type.equals("Professeur")){
+            delaie=3;
+        }else if (type.equals("Visiteur")){
+            delaie=1;
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Erreur de type", "erreur", JOptionPane.ERROR_MESSAGE);
+        }
+        if(nblivre<1){
+            JOptionPane.showMessageDialog(null, "Le livre n'est pas disponible pour le moment", "erreur", JOptionPane.ERROR_MESSAGE);
+        }else if(quota<1){
+            JOptionPane.showMessageDialog(null, "L'adherent(e) à atteind le nombre maximum de livre empruntable", "erreur", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        else if(statutAd.equals("Retardataire")){
+            JOptionPane.showMessageDialog(null, "L'adherent étant retardataire ne peut pas effectuer d'emprunt à nouveau", "erreur", JOptionPane.ERROR_MESSAGE);
+        }else{
+            Emprunt emprunt=new Emprunt(cnib,id,delaie);
+            
+            Connection con = Connexion.getConnection();
+            String query = "INSERT INTO emprunt (refAdherent,refLivre,statut,datePret,dateRestitution) VALUES (?, ? ,? ,? ,?)";
+            try {
+                PreparedStatement stmt = con.prepareStatement(query);
+                stmt.setString(1, emprunt.getIdAherent());
+                stmt.setInt(2, emprunt.getIdLivre());
+                stmt.setString(3, emprunt.getStatut());
+                
+                // Utiliser setTimestamp pour les objets LocalDateTime
+                stmt.setTimestamp(4, java.sql.Timestamp.valueOf(emprunt.getDateEmprunt()));
+                stmt.setTimestamp(5, java.sql.Timestamp.valueOf(emprunt.getDateRestitution()));
+                
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(null,"Emprunt effectué avec succès !");
+                updatequota(cnib,"decrement");
+                updatenbexemplaire(id,"decrement");
+                afficher_livre();
+                afficher_adherent();
+                afficher_emprunts();
+                imprimer_recu();
+            } catch (SQLException e) {
+                System.out.println("Erreur  : " + e.getMessage());
+            }
+            txttitre.setText("");
+            txtadherent.setText("");
+            txtauteur.setText("");
+        }
+    }else{
+        JOptionPane.showMessageDialog(this,"veillez selectionner l'adhérent(e)","attention",JOptionPane.ERROR_MESSAGE);     
+    }
+}else{
+    JOptionPane.showMessageDialog(this,"veillez selectionner le livre","attention",JOptionPane.ERROR_MESSAGE);
+}      
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
@@ -1516,7 +1590,7 @@ try {
             afficher_livre1();
              txttitre1.setText("");
              txtadherent1.setText("");
-             txtauteur.setText("");
+             txtauteur1.setText("");
           
      } 
              }else{
