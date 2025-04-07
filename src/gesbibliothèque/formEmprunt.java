@@ -4,15 +4,23 @@
  */
 package gesbibliothèque;
 
+import classe.ReportView;
+import classe.connexionbd;
 import gesbibliothèque.classe.Connexion;
 import gesbibliothèque.classe.Emprunt;
+import static gesbibliothèque.formadherent.con;
+import static gesbibliothèque.formadherent.st;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
@@ -22,6 +30,20 @@ import javax.swing.event.DocumentListener;
 import javax.swing.RowFilter;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableRowSorter;
+import javax.swing.event.ListSelectionListener;
+import javax.swing.event.ListSelectionEvent;
+  import javax.swing.event.ListSelectionListener;
+  import javax.swing.event.ListSelectionEvent;
+  import javax.swing.table.TableModel;
+import net.sf.jasperreports.engine.JREmptyDataSource;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
+
 
 
 /**
@@ -38,6 +60,22 @@ public class formEmprunt extends javax.swing.JInternalFrame {
     private TableRowSorter<DefaultTableModel> sorter1;
     private TableRowSorter<DefaultTableModel> sorter2;
     private TableRowSorter<DefaultTableModel> sorter3;
+    
+    DefaultTableModel model; 
+    DefaultTableModel model1; 
+    static int index;
+    static int index2;
+    static  int modelRow;
+    static  int modelRow1;
+    
+    DefaultTableModel model2; 
+    DefaultTableModel model3; 
+    static int index3;
+    static int index4;
+    static  int modelRow2;
+    static  int modelRow3;
+    
+    
     public formEmprunt() {
         initComponents();
       con=Connexion.getConnection();
@@ -46,20 +84,177 @@ public class formEmprunt extends javax.swing.JInternalFrame {
       afficher_livre1();
       afficher_adherent1();
       afficher_emprunts();
-      DefaultTableModel model = (DefaultTableModel) tablo_adherent.getModel();
+       
+      
+      
+      /////////////////////////////////////////////////////////////////////////////////////
+       model = (DefaultTableModel) tablo_adherent.getModel();
        sorter = new TableRowSorter<>(model);
       tablo_adherent.setRowSorter(sorter);
-     DefaultTableModel model1 = (DefaultTableModel) tablo_livre.getModel();
+         model1 = (DefaultTableModel) tablo_livre.getModel();
        sorter1 = new TableRowSorter<>(model1);
       tablo_livre.setRowSorter(sorter1);
-       DefaultTableModel model2 = (DefaultTableModel) tablo_livre1.getModel();
+      
+       model2 = (DefaultTableModel) tablo_adherent1.getModel();
        sorter2 = new TableRowSorter<>(model2);
-      tablo_livre1.setRowSorter(sorter2);
-       DefaultTableModel model3 = (DefaultTableModel) tablo_adherent1.getModel();
+      tablo_adherent1.setRowSorter(sorter2);
+         model3 = (DefaultTableModel) tablo_livre1.getModel();
        sorter3 = new TableRowSorter<>(model3);
-      tablo_adherent1.setRowSorter(sorter3);
+      tablo_livre1.setRowSorter(sorter3);
+      
+      
+      tablo_livre.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            afficherDetailsSelectiona();
+        }
+    }
+});
+      
+  
+      tablo_adherent.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            afficherDetailsSelectionb();
+        }
+    }
+});  
+      
+       tablo_livre1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            afficherDetailsSelectionc();
+        }
+    }
+});
+      
+  
+      tablo_adherent1.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+    @Override
+    public void valueChanged(ListSelectionEvent e) {
+        if (!e.getValueIsAdjusting()) {
+            afficherDetailsSelectiond();
+        }
+    }
+});       
+      /////////////////////////////////////////////////////////////////////////////////////
+     
+   
         
     }
+    
+
+   private void imprimer_recu(){
+               // TODO add your handling code here:
+       try { 
+           
+     Connection con = Connexion.getConnection();
+    // Chemin vers le fichier .jrxml
+    String reportPath = "src\\gesbibliothèque\\rapportemprunt.jasper";
+
+    // Compilation du rapport
+   JasperReport jasperReport = (JasperReport) JRLoader.loadObjectFromFile(reportPath);
+
+ 
+
+    // Remplissage du rapport avec les données
+    JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, new HashMap<>(),con);
+
+    // Affichage du rapport
+    JasperViewer.viewReport(jasperPrint, false);
+
+    
+ 
+    // Fermeture de la connexion
+    
+} catch (JRException e) {
+    e.printStackTrace();
+    JOptionPane.showMessageDialog(null, "Erreur lors de la génération du rapport : " + e.getMessage());
+}
+
+
+   } 
+    
+    
+ 
+     
+private void afficherDetailsSelectiona() {
+    index = tablo_livre.getSelectedRow();
+    if (index != -1) { // Vérifie si une ligne est sélectionnée
+         modelRow = tablo_livre.convertRowIndexToModel(index);
+      //   model1 = (DefaultTableModel) tablo_livre.getModel();
+        
+        // Supposons que vous ayez des colonnes "Nom", "Prénom", "Email" dans votre JTable
+        String titre = model1.getValueAt(modelRow,0).toString();
+        String auteur = model1.getValueAt(modelRow,1).toString();
+        
+        
+        // Mise à jour des labels avec les informations récupérées
+        txttitre.setText(titre);
+        txtauteur.setText(auteur);
+        
+    }
+}
+ 
+private void afficherDetailsSelectionb() {
+    index2 = tablo_adherent.getSelectedRow();
+    if (index2 != -1) { // Vérifie si une ligne est sélectionnée
+         modelRow1 = tablo_adherent.convertRowIndexToModel(index2);
+   //     model = (DefaultTableModel) tablo_adherent.getModel();
+        
+        // Supposons que vous ayez des colonnes "Nom", "Prénom", "Email" dans votre JTable
+        String nom = model.getValueAt(modelRow1,1).toString();
+        String prenom = model.getValueAt(modelRow1,2).toString();
+        
+        
+        // Mise à jour des labels avec les informations récupérées
+        txtadherent.setText(nom+" "+prenom);
+        
+        
+    }
+}
+
+private void afficherDetailsSelectionc() {
+    index3 = tablo_livre1.getSelectedRow();
+    if (index3 != -1) { // Vérifie si une ligne est sélectionnée
+         modelRow3 = tablo_livre1.convertRowIndexToModel(index3);
+      //   model1 = (DefaultTableModel) tablo_livre.getModel();
+        
+        // Supposons que vous ayez des colonnes "Nom", "Prénom", "Email" dans votre JTable
+        String titre = model3.getValueAt(modelRow3,0).toString();
+        String auteur = model3.getValueAt(modelRow3,1).toString();
+        
+        
+        // Mise à jour des labels avec les informations récupérées
+        txttitre1.setText(titre);
+        txtauteur1.setText(auteur);
+        
+    }
+}
+ 
+private void afficherDetailsSelectiond() {
+    index4 = tablo_adherent1.getSelectedRow();
+    if (index4 != -1) { // Vérifie si une ligne est sélectionnée
+         modelRow2 = tablo_adherent1.convertRowIndexToModel(index4);
+   //     model = (DefaultTableModel) tablo_adherent.getModel();
+        
+        // Supposons que vous ayez des colonnes "Nom", "Prénom", "Email" dans votre JTable
+        String nom = model2.getValueAt(modelRow2,1).toString();
+        String prenom = model2.getValueAt(modelRow2,2).toString();
+        
+        
+        // Mise à jour des labels avec les informations récupérées
+        txtadherent1.setText(nom+" "+prenom);
+        
+        
+    }
+}
+
+    
+    
     
 public void updateStatut(int id, String cnib) {
     Connection con = null;
@@ -338,9 +533,9 @@ public void updateStatut(int id, String cnib) {
              }else{
              JOptionPane.showMessageDialog(this,"error occured","erreur",JOptionPane.ERROR_MESSAGE);
              }
-              int index2=tablo_adherent.getSelectedRow();
-              TableModel tm2=tablo_adherent.getModel();
-         String kota=tm2.getValueAt(index2,5).toString().trim();
+             
+             
+         String kota=model.getValueAt(modelRow1,5).toString().trim();
          int quota=Integer.parseInt(kota);
              
              Connection con=Connexion.getConnection();
@@ -366,9 +561,8 @@ public void updateStatut(int id, String cnib) {
              }else{
              JOptionPane.showMessageDialog(this,"error occured","erreur",JOptionPane.ERROR_MESSAGE);
              }
-              int index2=tablo_adherent1.getSelectedRow();
-              TableModel tm2=tablo_adherent1.getModel();
-         String kota=tm2.getValueAt(index2,5).toString().trim();
+               
+         String kota=model2.getValueAt(modelRow2,5).toString().trim();
          int quota=Integer.parseInt(kota);
              
              Connection con=Connexion.getConnection();
@@ -393,9 +587,8 @@ public void updateStatut(int id, String cnib) {
              }else{
              JOptionPane.showMessageDialog(this,"error occured","erreur",JOptionPane.ERROR_MESSAGE);
              }
-              int index2=tablo_livre.getSelectedRow();
-              TableModel tm2=tablo_livre.getModel();
-         String nb=tm2.getValueAt(index2,5).toString().trim();
+              
+         String nb=model1.getValueAt(modelRow,5).toString().trim();
          int nblivre=Integer.parseInt(nb);
              
              Connection con=Connexion.getConnection();
@@ -420,9 +613,8 @@ public void updateStatut(int id, String cnib) {
              }else{
              JOptionPane.showMessageDialog(this,"error occured","erreur",JOptionPane.ERROR_MESSAGE);
              }
-              int index2=tablo_livre1.getSelectedRow();
-              TableModel tm2=tablo_livre1.getModel();
-         String nb=tm2.getValueAt(index2,5).toString().trim();
+         
+         String nb=model3.getValueAt(modelRow3,5).toString().trim();
          int nblivre=Integer.parseInt(nb);
              
              Connection con=Connexion.getConnection();
@@ -502,7 +694,7 @@ public void updateStatut(int id, String cnib) {
 
             },
             new String [] {
-                "Titre", "Adhérent", "statut", "Nombre exemplaire", "Date de Prêt", "Date de Restitution"
+                "Titre", "Adhérent", "statut", "Nombre exemplaire", "Date de Prêt", "Date limite de Restitution"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -556,10 +748,10 @@ public void updateStatut(int id, String cnib) {
                     .addComponent(jScrollPane1)
                     .addGroup(jPanel1Layout.createSequentialGroup()
                         .addComponent(jButton1)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 100, Short.MAX_VALUE)
                         .addComponent(jButton2)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jButton5, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))
+                        .addGap(97, 97, 97)
+                        .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 320, javax.swing.GroupLayout.PREFERRED_SIZE)))
                 .addContainerGap())
         );
         jPanel1Layout.setVerticalGroup(
@@ -572,7 +764,7 @@ public void updateStatut(int id, String cnib) {
                     .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton2, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton5, javax.swing.GroupLayout.PREFERRED_SIZE, 56, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addContainerGap(31, Short.MAX_VALUE))
+                .addContainerGap(85, Short.MAX_VALUE))
         );
 
         jTabbedPane1.addTab("Statuts des emprunts", jPanel1);
@@ -641,6 +833,7 @@ public void updateStatut(int id, String cnib) {
             }
         });
         jScrollPane2.setViewportView(tablo_livre);
+        ////////////////////////////////////////////
 
         tablo_adherent.setBackground(new java.awt.Color(255, 255, 255));
         tablo_adherent.setModel(new javax.swing.table.DefaultTableModel(
@@ -678,7 +871,7 @@ public void updateStatut(int id, String cnib) {
         jPanel2Layout.setHorizontalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
             .addGroup(jPanel2Layout.createSequentialGroup()
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addContainerGap()
                         .addComponent(jLabel17, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -694,12 +887,6 @@ public void updateStatut(int id, String cnib) {
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                         .addComponent(jLabel19, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane2, javax.swing.GroupLayout.PREFERRED_SIZE, 697, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane3, javax.swing.GroupLayout.PREFERRED_SIZE, 697, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGap(39, 39, 39)
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
@@ -714,8 +901,14 @@ public void updateStatut(int id, String cnib) {
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                                 .addComponent(jLabel15, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtauteur, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(txtauteur, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane2, javax.swing.GroupLayout.DEFAULT_SIZE, 978, Short.MAX_VALUE))
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addContainerGap()
+                        .addComponent(jScrollPane3)))
+                .addContainerGap(17, Short.MAX_VALUE))
         );
         jPanel2Layout.setVerticalGroup(
             jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -747,7 +940,7 @@ public void updateStatut(int id, String cnib) {
                         .addComponent(jTextField3, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel19))
                 .addGap(3, 3, 3)
-                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                .addComponent(jScrollPane3, javax.swing.GroupLayout.DEFAULT_SIZE, 191, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -909,42 +1102,41 @@ public void updateStatut(int id, String cnib) {
             .addGroup(jPanel4Layout.createSequentialGroup()
                 .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addGap(27, 27, 27)
-                        .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane4, javax.swing.GroupLayout.PREFERRED_SIZE, 697, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addContainerGap()
-                        .addComponent(jScrollPane5, javax.swing.GroupLayout.PREFERRED_SIZE, 697, javax.swing.GroupLayout.PREFERRED_SIZE))
-                    .addGroup(jPanel4Layout.createSequentialGroup()
-                        .addGap(39, 39, 39)
                         .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                                .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
-                        .addGap(53, 53, 53)
-                        .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(txtadherent1, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addGroup(jPanel4Layout.createSequentialGroup()
-                                .addComponent(txttitre1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addContainerGap()
+                                .addComponent(jLabel22, javax.swing.GroupLayout.PREFERRED_SIZE, 50, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, 169, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(27, 27, 27)
+                                .addComponent(jLabel16, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addContainerGap()
+                                .addComponent(jLabel23, javax.swing.GroupLayout.PREFERRED_SIZE, 233, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                .addComponent(txtauteur1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                                .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, 240, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jLabel24, javax.swing.GroupLayout.PREFERRED_SIZE, 45, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel4Layout.createSequentialGroup()
+                                .addGap(39, 39, 39)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                                        .addComponent(jLabel21, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addComponent(jLabel20, javax.swing.GroupLayout.PREFERRED_SIZE, 95, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jButton4, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 114, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                .addGap(53, 53, 53)
+                                .addGroup(jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addComponent(txtadherent1, javax.swing.GroupLayout.PREFERRED_SIZE, 323, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                    .addGroup(jPanel4Layout.createSequentialGroup()
+                                        .addComponent(txttitre1, javax.swing.GroupLayout.PREFERRED_SIZE, 230, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(jLabel25, javax.swing.GroupLayout.PREFERRED_SIZE, 58, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                        .addComponent(txtauteur1, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)))))
+                        .addGap(0, 286, Short.MAX_VALUE))
+                    .addComponent(jScrollPane4, javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jScrollPane5, javax.swing.GroupLayout.Alignment.TRAILING))
+                .addContainerGap())
         );
         jPanel4Layout.setVerticalGroup(
             jPanel4Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -976,7 +1168,7 @@ public void updateStatut(int id, String cnib) {
                         .addComponent(jTextField4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                     .addComponent(jLabel24))
                 .addGap(3, 3, 3)
-                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 137, Short.MAX_VALUE)
+                .addComponent(jScrollPane5, javax.swing.GroupLayout.DEFAULT_SIZE, 179, Short.MAX_VALUE)
                 .addContainerGap())
         );
 
@@ -999,9 +1191,9 @@ public void updateStatut(int id, String cnib) {
             private void appliquerFiltre() {
                 String text = jTextField2.getText().trim();
                 if (text.trim().length() == 0) {
-                    sorter2.setRowFilter(null);
+                    sorter3.setRowFilter(null);
                 } else {
-                    sorter2.setRowFilter(RowFilter.regexFilter("^" + text, 0));
+                    sorter3.setRowFilter(RowFilter.regexFilter("^" + text, 0));
                 }
             }
         });
@@ -1024,9 +1216,9 @@ public void updateStatut(int id, String cnib) {
             private void appliquerFiltre() {
                 String text = jTextField4.getText().trim().toUpperCase();
                 if (text.trim().length() == 0) {
-                    sorter3.setRowFilter(null);
+                    sorter2.setRowFilter(null);
                 } else {
-                    sorter3.setRowFilter(RowFilter.regexFilter("^" + text, 0));
+                    sorter2.setRowFilter(RowFilter.regexFilter("^" + text, 0));
                 }
             }
         });
@@ -1035,21 +1227,17 @@ public void updateStatut(int id, String cnib) {
         jPanel3.setLayout(jPanel3Layout);
         jPanel3Layout.setHorizontalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 710, Short.MAX_VALUE)
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
         jPanel3Layout.setVerticalGroup(
             jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGap(0, 490, Short.MAX_VALUE)
-            .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                .addGroup(jPanel3Layout.createSequentialGroup()
-                    .addGap(0, 0, Short.MAX_VALUE)
-                    .addComponent(jPanel4, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addGap(0, 0, Short.MAX_VALUE)))
+            .addGroup(jPanel3Layout.createSequentialGroup()
+                .addContainerGap()
+                .addComponent(jPanel4, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addContainerGap())
         );
 
         jTabbedPane1.addTab("Restituer livre", jPanel3);
@@ -1075,34 +1263,40 @@ public void updateStatut(int id, String cnib) {
 
     private void tablo_livreMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablo_livreMouseClicked
         // TODO add your handling code here:
-         int index=tablo_livre.getSelectedRow();
-        TableModel tm=tablo_livre.getModel();
+    /*    int  index=tablo_livre.getSelectedRow();
+      TableModel   tm=tablo_livre.getModel();
         txttitre.setText(tm.getValueAt(index,0).toString());
         txtauteur.setText(tm.getValueAt(index,1).toString());
-        
+       */ 
     }//GEN-LAST:event_tablo_livreMouseClicked
 
     private void tablo_adherentMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablo_adherentMouseClicked
         // TODO add your handling code here:
-         int index=tablo_adherent.getSelectedRow();
+      /*   int index=tablo_adherent.getSelectedRow();
         TableModel tm=tablo_adherent.getModel();
-        txtadherent.setText(tm.getValueAt(index,1).toString()+" "+tm.getValueAt(index,2).toString());
+        txtadherent.setText(tm.getValueAt(index,1).toString()+" "+tm.getValueAt(index,2).toString());*/
     }//GEN-LAST:event_tablo_adherentMouseClicked
 
     private void jButton3MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton3MouseClicked
-     // TODO add your handling code here:
+ /* int selectedRow1=tablo_livre.getSelectedRow();
+  int selectedRow2=tablo_adherent.getSelectedRow();
+  
+  if(selectedRow1 != -1){
+      
+      if(selectedRow2 != -1){
+             // TODO add your handling code here:
      int id= recupereridLivre(txttitre.getText(),txtauteur.getText());
-      int index=tablo_livre.getSelectedRow();
-        TableModel tm=tablo_livre.getModel();
-         String nb=tm.getValueAt(index,5).toString().trim();
+     
+        
+         String nb=model1.getValueAt(modelRow,5).toString().trim();
          int nblivre=Integer.parseInt(nb);             
-        int index2=tablo_adherent.getSelectedRow();
-        TableModel tm2=tablo_adherent.getModel();
-        String kota=tm2.getValueAt(index2,5).toString().trim();
+      
+    
+        String kota=model.getValueAt(modelRow1,5).toString().trim();
          int quota=Integer.parseInt(kota);
-       String type=tm2.getValueAt(index2,4).toString().trim();
-       String cnib= tm2.getValueAt(index2,0).toString();
-       String statutAd=tm2.getValueAt(index2,6).toString();
+       String type=model.getValueAt(modelRow1,4).toString().trim();
+       String cnib= model.getValueAt(modelRow1,0).toString();
+       String statutAd=model.getValueAt(modelRow1,6).toString();
        
       int delaie=0;
       if(type.equals("Etudiant"))
@@ -1145,6 +1339,7 @@ public void updateStatut(int id, String cnib) {
             afficher_livre();
             afficher_adherent();
             afficher_emprunts();
+            imprimer_recu();
         } catch (SQLException e) {
             System.out.println("Erreur  : " + e.getMessage());
         }
@@ -1152,6 +1347,86 @@ public void updateStatut(int id, String cnib) {
       txtadherent.setText("");
       txtauteur.setText("");
       }
+      }else{
+     JOptionPane.showMessageDialog(this,"veillez selectionner l'adhérent(e)","attention",JOptionPane.ERROR_MESSAGE);     
+      }
+  }else{
+      JOptionPane.showMessageDialog(this,"veillez selectionner le livre","attention",JOptionPane.ERROR_MESSAGE);
+  }*/
+    int selectedRow1=tablo_livre.getSelectedRow();
+int selectedRow2=tablo_adherent.getSelectedRow();
+
+if(selectedRow1 != -1){
+    
+    if(selectedRow2 != -1){
+        // TODO add your handling code here:
+        int id= recupereridLivre(txttitre.getText(),txtauteur.getText());
+        
+        String nb=model1.getValueAt(modelRow,5).toString().trim();
+        int nblivre=Integer.parseInt(nb);             
+        
+        String kota=model.getValueAt(modelRow1,5).toString().trim();
+        int quota=Integer.parseInt(kota);
+        String type=model.getValueAt(modelRow1,4).toString().trim();
+        String cnib= model.getValueAt(modelRow1,0).toString();
+        String statutAd=model.getValueAt(modelRow1,6).toString();
+        
+        int delaie=0;
+        if(type.equals("Etudiant"))
+        {
+            delaie=1;
+        }else if(type.equals("Enseignant")){
+            delaie=3;
+        }else if (type.equals("Visiteur")){
+            delaie=1;
+        }
+        else{
+            JOptionPane.showMessageDialog(null, "Erreur de type", "erreur", JOptionPane.ERROR_MESSAGE);
+        }
+        if(nblivre<1){
+            JOptionPane.showMessageDialog(null, "Le livre n'est pas disponible pour le moment", "erreur", JOptionPane.ERROR_MESSAGE);
+        }else if(quota<1){
+            JOptionPane.showMessageDialog(null, "L'adherent(e) à atteind le nombre maximum de livre empruntable", "erreur", JOptionPane.ERROR_MESSAGE);
+        }
+        
+        else if(statutAd.equals("Retardataire")){
+            JOptionPane.showMessageDialog(null, "L'adherent étant retardataire ne peut pas effectuer d'emprunt à nouveau", "erreur", JOptionPane.ERROR_MESSAGE);
+        }else{
+            Emprunt emprunt=new Emprunt(cnib,id,delaie);
+            
+            Connection con = Connexion.getConnection();
+            String query = "INSERT INTO emprunt (refAdherent,refLivre,statut,datePret,dateRestitution) VALUES (?, ? ,? ,? ,?)";
+            try {
+                PreparedStatement stmt = con.prepareStatement(query);
+                stmt.setString(1, emprunt.getIdAherent());
+                stmt.setInt(2, emprunt.getIdLivre());
+                stmt.setString(3, emprunt.getStatut());
+                
+                // Utiliser setTimestamp pour les objets LocalDateTime
+                stmt.setTimestamp(4, java.sql.Timestamp.valueOf(emprunt.getDateEmprunt()));
+                stmt.setTimestamp(5, java.sql.Timestamp.valueOf(emprunt.getDateRestitution()));
+                
+                stmt.executeUpdate();
+                JOptionPane.showMessageDialog(null,"Emprunt effectué avec succès !");
+                updatequota(cnib,"decrement");
+                updatenbexemplaire(id,"decrement");
+                afficher_livre();
+                afficher_adherent();
+                afficher_emprunts();
+                imprimer_recu();
+            } catch (SQLException e) {
+                System.out.println("Erreur  : " + e.getMessage());
+            }
+            txttitre.setText("");
+            txtadherent.setText("");
+            txtauteur.setText("");
+        }
+    }else{
+        JOptionPane.showMessageDialog(this,"veillez selectionner l'adhérent(e)","attention",JOptionPane.ERROR_MESSAGE);     
+    }
+}else{
+    JOptionPane.showMessageDialog(this,"veillez selectionner le livre","attention",JOptionPane.ERROR_MESSAGE);
+}      
     }//GEN-LAST:event_jButton3MouseClicked
 
     private void jButton1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton1MouseClicked
@@ -1236,13 +1511,18 @@ public void updateStatut(int id, String cnib) {
     }//GEN-LAST:event_jButton5MouseClicked
 
     private void jButton4MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jButton4MouseClicked
-        // TODO add your handling code here:
+         int selectedRow1=tablo_livre1.getSelectedRow();
+         int selectedRow2=tablo_adherent1.getSelectedRow();
+         
+         if(selectedRow1!= -1){
+             
+             if(selectedRow2!= -1){
+                         // TODO add your handling code here:
          int id= recupereridLivre(txttitre1.getText(),txtauteur1.getText());
       
-        int index2=tablo_adherent1.getSelectedRow();
-        TableModel tm2=tablo_adherent1.getModel();
+   
       
-       String cnib= tm2.getValueAt(index2,0).toString();
+       String cnib= model2.getValueAt(modelRow2,0).toString();
        int nbligne=0;
                
 try {
@@ -1310,27 +1590,35 @@ try {
             afficher_livre1();
              txttitre1.setText("");
              txtadherent1.setText("");
-             txtauteur.setText("");
+             txtauteur1.setText("");
           
      } 
+             }else{
+                 
+                 JOptionPane.showMessageDialog(this,"veillez selectionner l'adhérent(e)","attention",JOptionPane.ERROR_MESSAGE);
+             }
+             
+         }else{
+             JOptionPane.showMessageDialog(this,"veillez selectionner le livre","attention",JOptionPane.ERROR_MESSAGE);
+         }
        
     }//GEN-LAST:event_jButton4MouseClicked
 
     private void tablo_livre1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablo_livre1MouseClicked
         // TODO add your handling code here:
-          int index=tablo_livre1.getSelectedRow();
+      /*    int index=tablo_livre1.getSelectedRow();
         TableModel tm=tablo_livre1.getModel();
         txttitre1.setText(tm.getValueAt(index,0).toString());
-        txtauteur1.setText(tm.getValueAt(index,1).toString());
+        txtauteur1.setText(tm.getValueAt(index,1).toString());*/
     }//GEN-LAST:event_tablo_livre1MouseClicked
 
     private void tablo_adherent1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tablo_adherent1MouseClicked
         // TODO add your handling code here:
-            // TODO add your handling code here:
+       /*     // TODO add your handling code here:
          int index=tablo_adherent1.getSelectedRow();
         TableModel tm=tablo_adherent1.getModel();
         txtadherent1.setText(tm.getValueAt(index,1).toString()+" "+tm.getValueAt(index,2).toString());
-        
+        */
     }//GEN-LAST:event_tablo_adherent1MouseClicked
 
 

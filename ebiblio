@@ -1,0 +1,10 @@
+tree 7903b7d97fc23c0ec4cc37a870d8ea93447734b8
+parent 79e5846a910f580c740492fed5e02ba81aa8de8b
+parent bc7b7f6e54ad2f9c392f9c351cb91b91580053d7
+author Stéphane Nana <Stéphane Nana@DESKTOP-THOBA4C> 1743290823 +0000
+committer Stéphane Nana <Stéphane Nana@DESKTOP-THOBA4C> 1743290823 +0000
+
+Merge origin/master into FormEmprunt
+
+# Conflicts:
+#	nbproject/project.properties
